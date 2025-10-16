@@ -1,0 +1,31 @@
+{
+  "name": "parkingbase-agentic-ai",
+  "version": "1.0.0",
+  "description": "100% Agentic AI Testing Framework - No Coding Required",
+  "main": "ai-test-runner.ts",
+  "scripts": {
+    "test:ai": "ts-node ai-test-runner.ts",
+    "test:ai:high": "ts-node ai-test-runner.ts High",
+    "test:ai:medium": "ts-node ai-test-runner.ts Medium",
+    "test:ai:low": "ts-node ai-test-runner.ts Low",
+    "test": "npm run test:ai"
+  },
+  "keywords": [
+    "agentic-ai",
+    "testing",
+    "automation",
+    "natural-language",
+    "playwright",
+    "no-code"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^20.19.21",
+    "exceljs": "^4.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

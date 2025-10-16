@@ -1,0 +1,10 @@
+Test ID,Test Name,Priority,Test Steps,Expected Results,Status
+TC_EXAMPLE,Example Test - Copy this format,High,"Step 1: Write your first action here
+Step 2: Write your second action
+Step 3: And so on...","Result 1: What should happen
+Result 2: What else should happen",Active
+TC001,Your First Test,High,"Navigate to https://demo.parkingbase.com/c/vignesh
+Enter address 'Times Square'
+Click search button","Search results should be displayed
+Map should be visible",Inactive
+
