@@ -36,26 +36,24 @@ class AgenticAITestRunner {
 
   /**
    * Parse CSV test cases into structured format
+   * Handles multi-line quoted fields properly
    */
   parseTestCases(csvContent: string): TestCase[] {
-    const lines = csvContent.split('\n');
     const testCases: TestCase[] = [];
+    const rows = this.parseCSV(csvContent);
     
     // Skip header row
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
-      if (!line || !line.trim()) continue;
-      
-      const parts = this.parseCSVLine(line);
-      if (parts.length < 6) continue;
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length < 6) continue;
       
       testCases.push({
-        id: parts[0] || '',
-        name: parts[1] || '',
-        priority: parts[2] || '',
-        steps: (parts[3] || '').split('\n').filter(s => s.trim()),
-        expectedResults: (parts[4] || '').split('\n').filter(s => s.trim()),
-        status: parts[5] || ''
+        id: row[0] || '',
+        name: row[1] || '',
+        priority: row[2] || '',
+        steps: (row[3] || '').split('\n').filter(s => s.trim()),
+        expectedResults: (row[4] || '').split('\n').filter(s => s.trim()),
+        status: row[5] || ''
       });
     }
     
@@ -63,30 +61,63 @@ class AgenticAITestRunner {
   }
 
   /**
-   * Parse CSV line handling quoted fields with newlines
+   * Parse CSV content handling multi-line quoted fields
    */
-  private parseCSVLine(line: string | undefined): string[] {
-    if (!line) return [];
-    
-    const result: string[] = [];
-    let current = '';
+  private parseCSV(csvContent: string): string[][] {
+    const rows: string[][] = [];
+    const chars = csvContent.split('');
+    let currentField = '';
+    let currentRow: string[] = [];
     let inQuotes = false;
+    let i = 0;
     
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
+    while (i < chars.length) {
+      const char = chars[i];
       
       if (char === '"') {
+        // Check for escaped quotes ("")
+        if (inQuotes && chars[i + 1] === '"') {
+          currentField += '"';
+          i += 2;
+          continue;
+        }
         inQuotes = !inQuotes;
+        i++;
       } else if (char === ',' && !inQuotes) {
-        result.push(current.trim());
-        current = '';
+        currentRow.push(currentField.trim());
+        currentField = '';
+        i++;
+      } else if (char === '\n' && !inQuotes) {
+        currentRow.push(currentField.trim());
+        if (currentRow.some(field => field.length > 0)) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        currentField = '';
+        i++;
+      } else if (char === '\r' && chars[i + 1] === '\n' && !inQuotes) {
+        currentRow.push(currentField.trim());
+        if (currentRow.some(field => field.length > 0)) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        currentField = '';
+        i += 2;
       } else {
-        current += char;
+        currentField += char;
+        i++;
       }
     }
     
-    result.push(current.trim());
-    return result;
+    // Handle last field/row
+    if (currentField || currentRow.length > 0) {
+      currentRow.push(currentField.trim());
+      if (currentRow.some(field => field.length > 0)) {
+        rows.push(currentRow);
+      }
+    }
+    
+    return rows;
   }
 
   /**
@@ -98,7 +129,19 @@ class AgenticAITestRunner {
       headless: false,
       slowMo: 500 // Slow down for demonstration
     });
-    this.page = await this.browser.newPage();
+    
+    // Create context with permissions denied (fixes location popup issue)
+    const context = await this.browser.newContext({
+      permissions: [], // Deny all permissions by default
+    });
+    
+    this.page = await context.newPage();
+    
+    // Deny any permission requests that come up
+    this.page.on('dialog', async dialog => {
+      console.log(`     ℹ️  Auto-dismissing dialog: ${dialog.message()}`);
+      await dialog.dismiss();
+    });
   }
 
   /**
@@ -181,7 +224,12 @@ class AgenticAITestRunner {
 
   /**
    * Execute a single step using AI interpretation
-   * This is where you'd integrate with Playwright MCP or similar AI service
+   * 
+   * ⚠️ WARNING: This is a simplified rule-based implementation.
+   * For true AI-powered testing, integrate with Playwright MCP:
+   * - Use Playwright MCP browser tools for natural language interaction
+   * - This will properly handle date pickers, complex interactions, etc.
+   * - See: https://github.com/executeautomation/mcp-playwright
    */
   private async executeAIStep(step: string): Promise<void> {
     // Convert natural language to actions
@@ -224,14 +272,38 @@ class AgenticAITestRunner {
 
     // Set dates/times
     if (stepLower.includes('set enter after') || stepLower.includes('set entry time')) {
-      console.log('     ℹ️  Setting entry date/time (simplified for demo)');
-      // In a real implementation, use AI to interact with date picker
+      console.log('     ⚠️  Date/time setting requires Playwright MCP integration');
+      // Try to find and interact with date/time inputs
+      try {
+        const dateInputs = this.page!.locator('input[type="datetime-local"], input[type="date"], input[type="time"], input[placeholder*="date" i], input[placeholder*="time" i]');
+        const count = await dateInputs.count();
+        if (count === 0) {
+          throw new Error('No date/time input fields found. Date picker interaction requires AI assistance.');
+        }
+        console.log('     ℹ️  Found date/time inputs but cannot interact without AI (Playwright MCP)');
+        // For now, just wait - this will likely cause test to fail at verification
+        await this.page!.waitForTimeout(1000);
+      } catch (e: any) {
+        throw new Error(`Cannot set entry date/time: ${e.message}. Requires Playwright MCP integration.`);
+      }
       return;
     }
 
     if (stepLower.includes('set exit before') || stepLower.includes('set exit time')) {
-      console.log('     ℹ️  Setting exit date/time (simplified for demo)');
-      // In a real implementation, use AI to interact with date picker
+      console.log('     ⚠️  Date/time setting requires Playwright MCP integration');
+      // Try to find and interact with date/time inputs
+      try {
+        const dateInputs = this.page!.locator('input[type="datetime-local"], input[type="date"], input[type="time"], input[placeholder*="date" i], input[placeholder*="time" i]');
+        const count = await dateInputs.count();
+        if (count === 0) {
+          throw new Error('No date/time input fields found. Date picker interaction requires AI assistance.');
+        }
+        console.log('     ℹ️  Found date/time inputs but cannot interact without AI (Playwright MCP)');
+        // For now, just wait - this will likely cause test to fail at verification
+        await this.page!.waitForTimeout(1000);
+      } catch (e: any) {
+        throw new Error(`Cannot set exit date/time: ${e.message}. Requires Playwright MCP integration.`);
+      }
       return;
     }
 
@@ -287,17 +359,67 @@ class AgenticAITestRunner {
 
   /**
    * Verify expected result using AI
+   * 
+   * ⚠️ WARNING: This has limited verification capabilities.
+   * For comprehensive verification, use Playwright MCP with AI-powered assertions.
    */
   private async verifyAIResult(expectedResult: string): Promise<void> {
     const resultLower = expectedResult.toLowerCase();
 
-    // Check for displayed/visible
-    if (resultLower.includes('should be displayed') || resultLower.includes('should be visible')) {
-      // Verify page has loaded and has content
+    // Check for search results being displayed
+    if (resultLower.includes('search results') && resultLower.includes('displayed')) {
       const body = await this.page!.locator('body').textContent();
       if (!body || body.length < 100) {
-        throw new Error(`Expected content to be displayed: ${expectedResult}`);
+        throw new Error(`Page content too short. Expected search results to be displayed.`);
       }
+      
+      // Look for common result indicators
+      const hasResults = await this.page!.locator('[class*="result"], [class*="listing"], [class*="garage"], [class*="parking"]').count();
+      if (hasResults === 0) {
+        console.warn('     ⚠️  WARNING: Could not find result elements. Verification may be inaccurate.');
+        throw new Error(`No search result elements found on page. Expected: ${expectedResult}`);
+      }
+      console.log(`     ✓ Found ${hasResults} potential result elements`);
+      return;
+    }
+
+    // Check for minimum parking options
+    if (resultLower.includes('at least') && (resultLower.includes('parking') || resultLower.includes('option'))) {
+      const countMatch = expectedResult.match(/at least (\d+)/i);
+      if (countMatch && countMatch[1]) {
+        const expectedCount = parseInt(countMatch[1]);
+        // Try multiple selectors for parking results
+        const selectors = [
+          '[class*="result"]',
+          '[class*="listing"]', 
+          '[class*="garage"]',
+          '[class*="parking"]',
+          '[role="article"]',
+          '[data-testid*="result"]'
+        ];
+        
+        let maxResults = 0;
+        for (const selector of selectors) {
+          const count = await this.page!.locator(selector).count();
+          maxResults = Math.max(maxResults, count);
+        }
+        
+        if (maxResults < expectedCount) {
+          throw new Error(`Expected at least ${expectedCount} parking options, but found ${maxResults} result elements.`);
+        }
+        console.log(`     ✓ Found ${maxResults} parking result elements (expected ≥${expectedCount})`);
+        return;
+      }
+    }
+
+    // Check for prices visible
+    if (resultLower.includes('price') && resultLower.includes('visible')) {
+      const priceElements = await this.page!.locator('[class*="price"], [class*="cost"], [class*="rate"]').count();
+      if (priceElements === 0) {
+        throw new Error(`No price elements found on page. Expected prices to be visible.`);
+      }
+      console.log(`     ✓ Found ${priceElements} price elements`);
+      return;
     }
 
     // Check for URL
@@ -312,21 +434,8 @@ class AgenticAITestRunner {
       }
     }
 
-    // Check for results count
-    if (resultLower.includes('at least') && resultLower.includes('results')) {
-      const countMatch = expectedResult.match(/at least (\d+)/i);
-      if (countMatch && countMatch[1]) {
-        const expectedCount = parseInt(countMatch[1]);
-        // Count visible result items (garage listings)
-        const results = await this.page!.locator('[role="group"]').count();
-        if (results < expectedCount) {
-          throw new Error(`Expected at least ${expectedCount} results, but found ${results}`);
-        }
-      }
-    }
-
-    // For other verifications, just log for now
-    console.log(`     ✓ Verified: ${expectedResult}`);
+    // For other verifications, warn about limitations
+    console.log(`     ⚠️  Limited verification: "${expectedResult}" - Consider using Playwright MCP for comprehensive checks`);
   }
 
   /**
@@ -370,7 +479,7 @@ class AgenticAITestRunner {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Agentic AI Test Report</title>
+  <title>Playwright MCP Agentic AI Test Report</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
     .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
@@ -444,7 +553,7 @@ class AgenticAITestRunner {
           <details>
             <summary style="cursor: pointer; margin-top: 10px;"><strong>View Screenshots (${result.screenshots.length})</strong></summary>
             <div class="screenshots">
-              ${result.screenshots.map(s => `<img src="../${s}" alt="Screenshot">`).join('')}
+              ${result.screenshots.map(s => `<img src="${s}" alt="Screenshot">`).join('')}
             </div>
           </details>
         ` : ''}

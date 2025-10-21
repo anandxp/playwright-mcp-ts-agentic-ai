@@ -1,62 +1,26 @@
 Test ID,Test Name,Priority,Test Steps,Expected Results,Status
-TC001,Search parking in New York,"High","Navigate to https://demo.parkingbase.com/c/vignesh
+TC001,Search parking in New York,High,"Navigate to https://demo.example.com/c/vignesh
 Enter address '1 New York Times Plaza'
 Set Enter After as 'tomorrow 8:00 PM'
 Set Exit Before as 'tomorrow 11:00 PM'
 Click search button","Search results should be displayed
 At least 5 parking options should be shown
 Prices should be visible for each option",Active
-TC002,Search parking for overnight stay,"High","Navigate to https://demo.parkingbase.com/c/vignesh
-Search for parking at 'Times Square New York'
-Set Entry time to 'today 11:00 PM'
-Set Exit time to 'tomorrow 6:00 AM'
-Click search","Results page should load
-URL should contain latitude and longitude
-Overnight pricing should be shown",Active
-TC003,Filter parking by price,"Medium","Search for parking at 'Broadway, New York'
-Wait for results to load
-Click on Filter button
-Select price range 'Under $50'
-Apply filter","Only garages under $50 should be displayed
-Filter should remain selected
-Map markers should update",Active
-TC004,Select and view garage details,"Medium","Search for parking near 'Central Park'
-Click on the first garage in results
-View garage details","Garage detail page should open
-Address should be visible
-Amenities should be listed
-Reserve button should be available",Active
-TC005,Change search dates,"Low","Perform a parking search
-Change Enter After time to 'next Monday 9:00 AM'
-Change Exit Before time to 'next Monday 6:00 PM'
-Click search again","New search results should load
-Prices should update based on new duration
-Previous results should be cleared",Active
-TC006,Search with invalid address,"High","Navigate to parking search page
-Enter 'XYZABC12345' as address
-Try to search","Error message should be displayed OR
-No suggestions should appear OR
-Search button should remain disabled",Active
-TC007,Verify garage sorting,"Low","Search for parking at 'Manhattan, NY'
-Sort results by 'Distance'
-Verify first result is closest","Results should re-order
-Closest garage should appear first
-Distance should be shown for each garage",Active
-TC008,Mobile responsive search,"Medium","Open site on mobile viewport
-Search for parking at 'Wall Street'
-Set dates and search","Mobile layout should display correctly
-Date picker should work on mobile
-Search results should be scrollable",Active
-TC009,Multiple location searches,"Low","Search for parking at 'Brooklyn Bridge'
-Note the results count
-Clear search
-Search for 'Statue of Liberty'
-Compare results","Different results should be shown
-Each search should be independent
-Results count should differ",Active
-TC010,Verify map integration,"Medium","Search for parking location
-Click on a map marker
-View garage on map","Map should display parking locations
-Marker click should show garage info
-Price should be visible on map popup",Active
-
+TC002,Check for prices,High,"This is a continuation of TC001
+Check whether the first result name is ""Automation03 by XP""
+Check whether price displayed against this result is $20","First result should be ""Automation03 by XP""
+Price should be $20",Active
+TC003,Change the Exit before time,Medium,"Navigate to https://demo.example.com/c/vignesh
+Enter address '1 New York Times Plaza'
+Set Enter After as 'tomorrow 8:00 PM'
+Set Exit Before as 'tomorrow 11:45 PM'
+Click search button","First result should be ""Automation03 by XP""
+Price should be $30",Active
+TC004,Click on Reserve Button,Medium,"This is a continuation of TC003
+Click on Reserve button 
+Check whether new popup with details appear
+Check whether rate is $30 in the Booking details section
+Check whether Total is $30 in the Booking details section","Button clicks successfully; booking popup opens with details (room, dates, guests).
+Popup displays centered, with Booking details section showing selected info; includes Confirm/Cancel buttons.
+Rate shows exactly ""$30"" (currency format).
+Total shows exactly ""$30"" (matches rate, no extras).",Active

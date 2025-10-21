@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agentic AI Test Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+              color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px; }
+    .header h1 { margin: 0; font-size: 32px; }
+    .summary { display: flex; gap: 20px; margin-bottom: 30px; }
+    .card { background: white; padding: 20px; border-radius: 10px; flex: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card h3 { margin: 0 0 10px 0; color: #555; font-size: 14px; text-transform: uppercase; }
+    .card .value { font-size: 36px; font-weight: bold; }
+    .passed { color: #10b981; }
+    .failed { color: #ef4444; }
+    .pass-rate { color: #667eea; }
+    .test-results { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .test-result { border-left: 4px solid #ddd; padding: 15px; margin-bottom: 15px; background: #fafafa; }
+    .test-result.passed { border-left-color: #10b981; }
+    .test-result.failed { border-left-color: #ef4444; }
+    .test-result h3 { margin: 0 0 10px 0; }
+    .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+    .status.passed { background: #d1fae5; color: #065f46; }
+    .status.failed { background: #fee2e2; color: #991b1b; }
+    .error { background: #fee2e2; padding: 10px; border-radius: 5px; margin-top: 10px; color: #991b1b; }
+    .logs { background: #f9fafb; padding: 10px; border-radius: 5px; margin-top: 10px; font-family: monospace; font-size: 12px; }
+    .screenshots { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+    .screenshots img { max-width: 200px; border: 1px solid #ddd; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🤖 Agentic AI Test Report</h1>
+    <p>100% Natural Language Test Execution</p>
+    <p>Generated: 16/10/2025, 11:46:26 am</p>
+  </div>
+
+  <div class="summary">
+    <div class="card">
+      <h3>Total Tests</h3>
+      <div class="value">3</div>
+    </div>
+    <div class="card">
+      <h3>Passed</h3>
+      <div class="value passed">2</div>
+    </div>
+    <div class="card">
+      <h3>Failed</h3>
+      <div class="value failed">1</div>
+    </div>
+    <div class="card">
+      <h3>Pass Rate</h3>
+      <div class="value pass-rate">66.7%</div>
+    </div>
+  </div>
+
+  <div class="test-results">
+    <h2>Test Results</h2>
+    
+      <div class="test-result passed">
+        <h3>
+          TC001: Search parking in New York
+          <span class="status passed">PASSED</span>
+        </h3>
+        <p><strong>Duration:</strong> 22.26s</p>
+        
+        
+        
+        <details>
+          <summary style="cursor: pointer; margin-top: 10px;"><strong>View Logs</strong></summary>
+          <div class="logs">Step 1: Navigate to https://demo.parkingbase.com/c/vignesh<br>Step 2: Enter address '1 New York Times Plaza'<br>Step 3: Set Enter After as 'tomorrow 8:00 PM'<br>Step 4: Set Exit Before as 'tomorrow 11:00 PM'<br>Step 5: Click search button<br>Verification: Search results should be displayed<br>Verification: At least 5 parking options should be shown<br>Verification: Prices should be visible for each option</div>
+        </details>
+        
+        
+          <details>
+            <summary style="cursor: pointer; margin-top: 10px;"><strong>View Screenshots (5)</strong></summary>
+            <div class="screenshots">
+              <img src="../screenshots/TC001_step_1.png" alt="Screenshot"><img src="../screenshots/TC001_step_2.png" alt="Screenshot"><img src="../screenshots/TC001_step_3.png" alt="Screenshot"><img src="../screenshots/TC001_step_4.png" alt="Screenshot"><img src="../screenshots/TC001_step_5.png" alt="Screenshot">
+            </div>
+          </details>
+        
+      </div>
+    
+      <div class="test-result failed">
+        <h3>
+          TC002: Search parking for overnight stay
+          <span class="status failed">FAILED</span>
+        </h3>
+        <p><strong>Duration:</strong> 20.28s</p>
+        
+        <div class="error"><strong>Error:</strong> URL should contain "latitude and longitude", but got: https://demo.parkingbase.com/c/vignesh/search?lat=40.7579747&lng=-73.9855426&search_text=Times%20Square%2C%20New%20York%2C%20Manhattan%2C%20NY%2C%20USA</div>
+        
+        <details>
+          <summary style="cursor: pointer; margin-top: 10px;"><strong>View Logs</strong></summary>
+          <div class="logs">Step 1: Navigate to https://demo.parkingbase.com/c/vignesh<br>Step 2: Search for parking at 'Times Square New York'<br>Step 3: Set Entry time to 'today 11:00 PM'<br>Step 4: Set Exit time to 'tomorrow 6:00 AM'<br>Step 5: Click search<br>Verification: Results page should load<br>Verification: URL should contain latitude and longitude</div>
+        </details>
+        
+        
+          <details>
+            <summary style="cursor: pointer; margin-top: 10px;"><strong>View Screenshots (6)</strong></summary>
+            <div class="screenshots">
+              <img src="../screenshots/TC002_step_1.png" alt="Screenshot"><img src="../screenshots/TC002_step_2.png" alt="Screenshot"><img src="../screenshots/TC002_step_3.png" alt="Screenshot"><img src="../screenshots/TC002_step_4.png" alt="Screenshot"><img src="../screenshots/TC002_step_5.png" alt="Screenshot"><img src="../screenshots/TC002_failure.png" alt="Screenshot">
+            </div>
+          </details>
+        
+      </div>
+    
+      <div class="test-result passed">
+        <h3>
+          TC006: Search with invalid address
+          <span class="status passed">PASSED</span>
+        </h3>
+        <p><strong>Duration:</strong> 6.88s</p>
+        
+        
+        
+        <details>
+          <summary style="cursor: pointer; margin-top: 10px;"><strong>View Logs</strong></summary>
+          <div class="logs">Step 1: Navigate to parking search page<br>Step 2: Enter 'XYZABC12345' as address<br>Step 3: Try to search<br>Verification: Error message should be displayed OR<br>Verification: No suggestions should appear OR<br>Verification: Search button should remain disabled</div>
+        </details>
+        
+        
+          <details>
+            <summary style="cursor: pointer; margin-top: 10px;"><strong>View Screenshots (3)</strong></summary>
+            <div class="screenshots">
+              <img src="../screenshots/TC006_step_1.png" alt="Screenshot"><img src="../screenshots/TC006_step_2.png" alt="Screenshot"><img src="../screenshots/TC006_step_3.png" alt="Screenshot">
+            </div>
+          </details>
+        
+      </div>
+    
+  </div>
+</body>
+</html>
+    

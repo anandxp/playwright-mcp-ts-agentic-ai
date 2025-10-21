@@ -207,6 +207,55 @@ Plus a beautiful HTML report with:
 - Forget to update test cases
 - Ignore failed tests
 
+## ⚠️ Current Limitations & Improvements
+
+### Known Issues:
+
+**✅ FIXED:**
+- ~~Browser location permission popup blocking tests~~ - **Now handled automatically!**
+- ~~Screenshot paths broken in reports~~ - **Fixed!**
+
+**⚠️ CURRENT LIMITATIONS:**
+
+1. **Date/Time Pickers Not Fully Supported**
+   - Current implementation cannot interact with complex date pickers
+   - Tests with date/time steps may fail
+   - **Solution**: Integrate with Playwright MCP for AI-powered interaction
+
+2. **Limited AI Understanding**
+   - Current version uses rule-based pattern matching
+   - Cannot handle complex UI interactions
+   - May produce false positives
+   - **Solution**: Use true AI-powered testing with Playwright MCP
+
+3. **Verification is Basic**
+   - Only checks for basic elements and counts
+   - Cannot understand context or nuanced conditions
+   - **Solution**: Playwright MCP provides AI-powered assertions
+
+### 🚀 Recommended: Integrate Playwright MCP
+
+For production-ready AI testing, integrate with **Playwright MCP** (Model Context Protocol):
+
+**What You'll Get:**
+- ✅ True AI-powered browser interaction
+- ✅ Natural language understanding of ANY step
+- ✅ Smart date picker handling
+- ✅ Context-aware verifications
+- ✅ Complex UI navigation
+- ✅ Fewer false positives
+
+**How to Integrate:**
+1. Install Playwright MCP: [github.com/executeautomation/mcp-playwright](https://github.com/executeautomation/mcp-playwright)
+2. Configure MCP server in your environment
+3. Update `executeAIStep()` method to call MCP browser tools
+4. Replace rule-based logic with AI calls
+
+**Resources:**
+- Playwright MCP Documentation
+- Model Context Protocol (MCP) by Anthropic
+- Example integration patterns (see ARCHITECTURE.md)
+
 ## 🆘 Troubleshooting
 
 ### Tests Not Running?
@@ -222,11 +271,25 @@ Plus a beautiful HTML report with:
 4. Review test steps for clarity
 5. Check if UI has changed
 
+### Browser Location Popup Blocking Tests?
+✅ **FIXED!** The framework now automatically denies location permissions.
+
+### Date/Time Steps Not Working?
+⚠️ **KNOWN LIMITATION:** Complex date pickers require Playwright MCP integration.
+- Current workaround: Use simple date/time input fields
+- Permanent solution: Integrate Playwright MCP (see above)
+
+### Tests Passing But Should Fail (False Positives)?
+⚠️ **KNOWN LIMITATION:** Basic verification may miss some failures.
+- Improved in latest version with stricter checks
+- For comprehensive verification, use Playwright MCP
+
 ### AI Not Understanding Steps?
 1. Make steps more specific
 2. Use exact button/field names
 3. Break complex steps into smaller ones
 4. Check `MANUAL_TESTER_GUIDE.md` for examples
+5. Consider integrating Playwright MCP for better AI understanding
 
 ## 🚀 Scaling to 100+ Tests
 
